@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const db = require('./db/connection');
 const users = db.get('users');
@@ -31,6 +32,7 @@ router.post('/signup', (req, res, next) => {
                             }
                             users.insert(user).then((insertedUser) => {
                                 res.json(insertedUser);
+                                console.log(insertedUser);
                             });
                         }
                     });
@@ -64,5 +66,7 @@ router.post('/login', (req, res, next) => {
         }
     });
 });
+
+console.log(process.env.TOKEN_SECRET);
 
 module.exports = router;
