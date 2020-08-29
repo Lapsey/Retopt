@@ -5,6 +5,10 @@ const signupUsername = document.getElementById('signupUsername')
 const signupEmail = document.getElementById('signupEmail');
 const signupPassword = document.getElementById('signupPassword');
 
+const loginForm = document.getElementById('loginForm');
+const loginUsername = document.getElementById('loginUsername');
+const loginPassword = document.getElementById('loginPassword');
+
 signupForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -21,6 +25,17 @@ signupForm.addEventListener('submit', (e) => {
 
 
     signupUser(signupFirstNameVal, signupLastNameVal, signupUsernameVal, signupEmailVal, signupPasswordVal);
+});
+
+loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const loginUsernameVal = loginUsername.value;
+    loginUsername.value = '';
+    const loginPasswordVal = loginPassword.value;
+    loginPassword.value = '';
+
+    loginUser(loginUsernameVal, loginPasswordVal);
 });
 
 const backendURL = 'http://192.168.219.13:8181';
@@ -50,5 +65,30 @@ function signupUser(firstName, lastName, username, email, password) {
         console.log(result);
     }).catch((err) => {
         alert(err);
-    })
+    });
+}
+
+function loginUser(username, password) {
+    fetch(`${backendURL}/auth/login`, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({
+            username,
+            password
+        })
+    }).then((response) => {
+        if (response.ok) {
+            return response.json();
+        }
+        return response.json().then((error) => {
+            throw new Error(error.message);
+        });
+    }).then((result) => {
+        console.log(result);
+    }).catch((err) => {
+        alert(err);
+    });
 }

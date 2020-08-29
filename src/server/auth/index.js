@@ -40,4 +40,29 @@ router.post('/signup', (req, res, next) => {
     });
 });
 
+function loginError(res, next) {
+    res.status(400)
+    const error = new Error('Unable to Login, Invalid Username or Password');
+    next(error);
+}
+
+router.post('/login', (req, res, next) => {
+    users.findOne({ username: req.body.username }).then((user) => {
+        if (user) {
+            console.log(req.body.password, user.password);
+            bcrypt.compare(req.body.password, user.password, (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else if (result) {
+                    res.json('Someone log this man in');
+                } else {
+                    loginError(res, next);
+                }
+            });
+        } else {
+            loginError(res, next);
+        }
+    });
+});
+
 module.exports = router;
